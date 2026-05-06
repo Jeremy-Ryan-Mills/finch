@@ -1,11 +1,11 @@
-use axum::{routing::{get, post}, Router};
+use axum::{routing::{get, post, delete}, Router};
 use std::fs::{self, OpenOptions};
 use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 
 mod engine;
-mod models;
+mod model;
 mod routes;
 mod store;
 
@@ -59,13 +59,14 @@ async fn main() {
     // start the log file for this run
     LOG_FILE.get_or_init(init_log_file);
 
-    log!("Scheduler starting")
+    log!("Scheduler starting");
 
     let store = store::new_store();
 
     // setup crud endpoints for ipc with python
     let app = Router::new()
         .route("/experiments", post(routes::register_experiment))
+        .route("/experiments/:id", delete(routes::deregister_experiment))
         .route("/allocations", get(routes::get_allocations))
         .route("/metrics", post(routes::post_metrics))
         .with_state(store);

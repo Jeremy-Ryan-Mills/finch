@@ -1,5 +1,6 @@
-use axum::{extract::State, http::StatusCode, Json};
-use crate::{engine, models::{AllocationResponse, ExperimentEntry, MetricsPayload}, store::SharedStore};
+use uuid::Uuid;
+use axum::{extract::{State, Path}, http::StatusCode, Json};
+use crate::{engine, model::{AllocationResponse, ExperimentEntry, MetricsPayload}, store::SharedStore};
 
 pub async fn register_experiment(
     State(store): State<SharedStore>,
@@ -8,6 +9,17 @@ pub async fn register_experiment(
     let mut s = store.lock().unwrap();
     s.insert(payload.id.clone(), payload);
     StatusCode::CREATED
+}
+
+pub async fn deregister_experiment(
+    State(store): State<SharedStore>,
+    Path(id): Path<Uuid>,
+) -> StatusCode {
+    let mut s = store.lock().unwrap();
+    match s.remove(&id) {
+        Some(_) => StatusCode::OK,
+        None => StatusCode::NOT_FOUND,
+    }
 }
 
 pub async fn get_allocations(

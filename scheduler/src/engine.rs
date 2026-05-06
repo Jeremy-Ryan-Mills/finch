@@ -1,11 +1,12 @@
-use crate::models::ExperimentEntry;
+use crate::model::ExperimentEntry;
+use uuid::Uuid;
 
 pub fn ucb_score(exp: &ExperimentEntry, total_pulls: u32, c: f64) -> f64 {
     let exploration = c * ((total_pulls as f64).ln() / (exp.pulls as f64 + 1.0)).sqrt();
     exp.score + exploration
 }
 
-pub fn allocate(experiments: &[ExperimentEntry], gpu_count: usize, c: f64) -> Vec<String> {
+pub fn allocate(experiments: &[ExperimentEntry], gpu_count: usize, c: f64) -> Vec<Uuid> {
     let total_pulls: u32 = experiments.iter().map(|e| e.pulls).sum();
     
     let mut scored: Vec<(&ExperimentEntry, f64)> = experiments

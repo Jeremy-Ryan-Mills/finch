@@ -1,3 +1,7 @@
 # Virtual environments
 venv/
 .venv/
+
+# Target and build
+target/
+build/
