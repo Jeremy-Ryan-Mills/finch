@@ -1,0 +1,49 @@
+# experiments/resnet_search.yaml
+experiment:
+  name: resnet-depth-search
+  version: 1
+  description: "Search over ResNet depth and learning rate"
+
+model:
+  architecture: resnet
+  params:
+    depth: 34
+    num_classes: 10
+    dropout: 0.2
+
+training:
+  dataset: cifar10
+  epochs: 90
+  batch_size: 128
+  optimizer: adamw
+  loss: cross_entropy
+  device: cuda
+
+search_space:
+  learning_rate:
+    type: log_uniform
+    min: 1e-4
+    max: 1e-1
+  depth:
+    type: categorical
+    values: [18, 34, 50, 101]
+  dropout:
+    type: uniform
+    min: 0.1
+    max: 0.5
+  batch_size:
+    type: categorical
+    values: [64, 128, 256]
+
+swarm:
+  population_size: 12
+  scheduler: ucb
+  ucb_c: 1.4
+  mutation_rate: 0.2
+  time_slice_steps: 200
+  report_interval: 50
+  pruning:
+    enabled: true
+    strategy: asha
+    brackets: [100, 300, 900]
+    kill_fraction: 0.3
