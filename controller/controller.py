@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from experiment import Experiment, experiment_from_json, experiment_from_yaml
+from population import seed_population
 
 class Controller():
     
@@ -13,10 +14,9 @@ class Controller():
         if not p.exists():
             raise FileNotFoundError(f"Config file not found: {p}")
         if p.suffix == ".json":
-            experiment = experiment_from_json(p)
+            template = experiment_from_json(p)
         elif p.suffix in (".yaml", ".yml"):
-            experiment = experiment_from_yaml(p)
+            template = experiment_from_yaml(p)
         else:
             raise ValueError(f"Unsupported file type: {p.suffix}")
-        self.experiments.append(experiment)
-
+        self.experiments = seed_population(template)
