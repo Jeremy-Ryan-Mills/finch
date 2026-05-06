@@ -18,6 +18,7 @@ pub struct MetricsPayload {
 
 #[derive(Debug, Serialize)]
 pub struct AllocationResponse {
-    pub gpu_0: Option<Uuid>,
-    pub gpu_1: Option<Uuid>,
+    //pub gpu_0: Option<Uuid>,
+    //pub gpu_1: Option<Uuid>,
+    pub gpus: Vec<Uuid>,
 }

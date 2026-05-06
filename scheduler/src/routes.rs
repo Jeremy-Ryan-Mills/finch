@@ -29,10 +29,7 @@ pub async fn get_allocations(
     let experiments: Vec<ExperimentEntry> = s.values().cloned().collect();
     let allocated = engine::allocate(&experiments, 2, 1.4);
 
-    Json(AllocationResponse {
-        gpu_0: allocated.get(0).cloned(),
-        gpu_1: allocated.get(1).cloned(),
-    })
+    Json(AllocationResponse { gpus: allocated })
 }
 
 pub async fn post_metrics(
