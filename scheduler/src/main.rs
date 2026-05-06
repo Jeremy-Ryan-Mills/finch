@@ -63,7 +63,7 @@ async fn main() {
 
     let store = store::new_store();
 
-    // setup crud endpoints for ipc with python
+    // setup http endpoints for ipc with python
     let app = Router::new()
         .route("/experiments", post(routes::register_experiment))
         .route("/experiments/:id", delete(routes::deregister_experiment))

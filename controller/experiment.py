@@ -60,6 +60,8 @@ class Experiment(BaseModel):
 
 
 def experiment_from_dict(data: dict) -> Experiment:
+    if "experiment" in data:
+        data["meta"] = data.pop("experiment")
     return Experiment(**data)
 
 

@@ -5,3 +5,9 @@ venv/
 # Target and build
 target/
 build/
+
+# Pycache
+__pycache__/
+
+# Logs
+logs/
