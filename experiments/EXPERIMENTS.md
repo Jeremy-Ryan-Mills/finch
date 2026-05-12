@@ -53,10 +53,10 @@ experiment:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `name` | string | ✓ | Unique name for this experiment family. Used in logs, dashboard, and lineage graph. |
-| `version` | integer | ✓ | Increment when making breaking changes to the config. |
-| `description` | string | ❌ | Human-readable summary. |
-| `tags` | list[string] | ❌ | Arbitrary labels for filtering in the dashboard. |
+| `name` | string | ✔ | Unique name for this experiment family. Used in logs, dashboard, and lineage graph. |
+| `version` | integer | ✔ | Increment when making breaking changes to the config. |
+| `description` | string | ✘ | Human-readable summary. |
+| `tags` | list[string] | ✘ | Arbitrary labels for filtering in the dashboard. |
 
 ---
 
@@ -75,8 +75,8 @@ model:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `architecture` | string | ✓ | Architecture identifier. Must match a registered model in `worker/trainer.py`. |
-| `params` | object | ❌ | Fixed model parameters. Any key here that also appears in `search_space` will be overridden at runtime by the sampled value. |
+| `architecture` | string | ✔ | Architecture identifier. Must match a registered model in `worker/trainer.py`. |
+| `params` | object | ✘ | Fixed model parameters. Any key here that also appears in `search_space` will be overridden at runtime by the sampled value. |
 
 ### Supported Architectures
 
@@ -109,14 +109,14 @@ training:
 
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `dataset` | string | ✓ | — | Dataset identifier. See supported datasets below. |
-| `epochs` | integer | ✓ | — | Maximum training epochs. Pruning may stop experiments before this. |
-| `batch_size` | integer | ✓ | — | Batch size. Can also be defined in `search_space` to search over it. |
-| `optimizer` | string | ✓ | — | Optimizer to use. See supported optimizers below. |
-| `loss` | string | ✓ | — | Loss function. See supported losses below. |
-| `device` | string | ❌ | `cuda` | `cuda` or `cpu`. Workers ignore this and use their assigned GPU. |
-| `num_workers` | integer | ❌ | `4` | DataLoader worker processes. |
-| `mixed_precision` | boolean | ❌ | `false` | Enable `torch.cuda.amp` for faster training on supported GPUs. |
+| `dataset` | string | ✔ | — | Dataset identifier. See supported datasets below. |
+| `epochs` | integer | ✔ | — | Maximum training epochs. Pruning may stop experiments before this. |
+| `batch_size` | integer | ✔ | — | Batch size. Can also be defined in `search_space` to search over it. |
+| `optimizer` | string | ✔ | — | Optimizer to use. See supported optimizers below. |
+| `loss` | string | ✔ | — | Loss function. See supported losses below. |
+| `device` | string | ✘ | `cuda` | `cuda` or `cpu`. Workers ignore this and use their assigned GPU. |
+| `num_workers` | integer | ✘ | `4` | DataLoader worker processes. |
+| `mixed_precision` | boolean | ✘ | `false` | Enable `torch.cuda.amp` for faster training on supported GPUs. |
 
 ### Supported Datasets
 
@@ -189,8 +189,8 @@ dropout:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `min` | float | ✓ | Lower bound (inclusive) |
-| `max` | float | ✓ | Upper bound (inclusive) |
+| `min` | float | ✔ | Lower bound (inclusive) |
+| `max` | float | ✔ | Upper bound (inclusive) |
 
 Use for: dropout rate, momentum, gradient clip value.
 
@@ -208,8 +208,8 @@ learning_rate:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `min` | float | ✓ | Lower bound |
-| `max` | float | ✓ | Upper bound |
+| `min` | float | ✔ | Lower bound |
+| `max` | float | ✔ | Upper bound |
 
 Use for: learning rate, weight decay, epsilon values. Prefer this over `uniform` whenever the parameter spans multiple orders of magnitude.
 
@@ -228,9 +228,9 @@ hidden_dim:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `min` | integer | ✓ | Lower bound (inclusive) |
-| `max` | integer | ✓ | Upper bound (inclusive) |
-| `step` | integer | ❌ | Snap to multiples of this value. Useful for dimensions that must be divisible by 64. |
+| `min` | integer | ✔ | Lower bound (inclusive) |
+| `max` | integer | ✔ | Upper bound (inclusive) |
+| `step` | integer | ✘ | Snap to multiples of this value. Useful for dimensions that must be divisible by 64. |
 
 Use for: hidden layer sizes, number of heads, number of layers.
 
@@ -251,7 +251,7 @@ optimizer:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `values` | list | ✓ | List of options to sample from. |
+| `values` | list | ✔ | List of options to sample from. |
 
 Use for: architecture variants, optimizer choice, activation functions, boolean flags.
 
@@ -268,7 +268,7 @@ num_classes:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `value` | any | ✓ | The fixed value. |
+| `value` | any | ✔ | The fixed value. |
 
 ---
 
@@ -295,12 +295,12 @@ swarm:
 
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `population_size` | integer | ✓ | — | Number of experiments alive at any time. As experiments are pruned, mutations fill the gap up to this limit. |
-| `scheduler` | string | ✓ | — | Bandit algorithm used by the Rust scheduler engine. See below. |
-| `ucb_c` | float | ❌ | `1.4` | Exploration constant for UCB. Higher = more exploration. Only used when `scheduler: ucb`. |
-| `mutation_rate` | float | ❌ | `0.2` | Fraction of a hyperparameter's range applied during mutation. `0.2` means ±20% perturbation. |
-| `time_slice_steps` | integer | ✓ | — | Number of training steps each experiment runs per GPU time slice before potentially being preempted. |
-| `report_interval` | integer | ❌ | `50` | Steps between metric reports sent from worker to Rust scheduler. |
+| `population_size` | integer | ✔ | — | Number of experiments alive at any time. As experiments are pruned, mutations fill the gap up to this limit. |
+| `scheduler` | string | ✔ | — | Bandit algorithm used by the Rust scheduler engine. See below. |
+| `ucb_c` | float | ✘ | `1.4` | Exploration constant for UCB. Higher = more exploration. Only used when `scheduler: ucb`. |
+| `mutation_rate` | float | ✘ | `0.2` | Fraction of a hyperparameter's range applied during mutation. `0.2` means ±20% perturbation. |
+| `time_slice_steps` | integer | ✔ | — | Number of training steps each experiment runs per GPU time slice before potentially being preempted. |
+| `report_interval` | integer | ✘ | `50` | Steps between metric reports sent from worker to Rust scheduler. |
 
 ### Supported Schedulers
 
@@ -327,10 +327,10 @@ pruning:
 
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `enabled` | boolean | ❌ | `true` | Toggle pruning on or off. |
-| `strategy` | string | ❌ | `asha` | Pruning strategy. See below. |
-| `brackets` | list[integer] | ✓ (if enabled) | — | Step counts at which pruning is evaluated. Experiments must have reached a bracket to be eligible for pruning at it. |
-| `kill_fraction` | float | ❌ | `0.3` | Fraction of eligible experiments to prune at each bracket. `0.3` kills the bottom 30%. |
+| `enabled` | boolean | ✘ | `true` | Toggle pruning on or off. |
+| `strategy` | string | ✘ | `asha` | Pruning strategy. See below. |
+| `brackets` | list[integer] | ✔ (if enabled) | — | Step counts at which pruning is evaluated. Experiments must have reached a bracket to be eligible for pruning at it. |
+| `kill_fraction` | float | ✘ | `0.3` | Fraction of eligible experiments to prune at each bracket. `0.3` kills the bottom 30%. |
 
 ### Supported Pruning Strategies
 
